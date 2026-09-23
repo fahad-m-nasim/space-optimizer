@@ -1,0 +1,37 @@
+[project]
+name = "space-optimizer"
+version = "0.1.0"
+description = "See what's using your disk space: folder sizes, last accessed/modified times, a CLI and a local web UI."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "fahad-m-nasim" }]
+requires-python = ">=3.10"
+keywords = ["disk-usage", "disk-space", "du", "cleanup", "storage", "cli"]
+classifiers = [
+    "Environment :: Console",
+    "Environment :: Web Environment",
+    "Intended Audience :: End Users/Desktop",
+    "Operating System :: MacOS",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Topic :: System :: Filesystems",
+    "Topic :: Utilities",
+]
+dependencies = [
+    "rich>=13.0",
+    "send2trash>=1.8",
+    "typer>=0.12",
+]
+
+[project.urls]
+Homepage = "https://github.com/fahad-m-nasim/space-optimizer"
+Issues = "https://github.com/fahad-m-nasim/space-optimizer/issues"
+
+[project.scripts]
+space-optimizer = "space_optimizer:main"
+space-optimizer-web = "space_optimizer.web:main"
+
+[build-system]
+requires = ["uv_build>=0.11.21,<0.12.0"]
+build-backend = "uv_build"
