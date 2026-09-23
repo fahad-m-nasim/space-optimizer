@@ -1,6 +1,6 @@
-# Space Optimizer
+# Local Disk Space Optimizer
 
-Find out what's filling up your disk. Space Optimizer scans a folder and shows how much space
+Find out what's filling up your disk. Local Disk Space Optimizer scans a folder and shows how much space
 each subfolder uses, plus when anything inside it was last accessed and last modified. Browse
 the results in a local web UI or print them in the terminal.
 
@@ -76,7 +76,7 @@ space-optimizer ~ --min-size 1G --sort accessed    # big folders, least recently
 
 ## Permissions
 
-Space Optimizer runs with the permissions of the user who starts it. It only scans folders
+Local Disk Space Optimizer runs with the permissions of the user who starts it. It only scans folders
 your account can read and never asks for elevated access.
 
 - **Unreadable folders** (permission denied) are skipped and marked with ⚠ and a count. Their sizes may be understated.

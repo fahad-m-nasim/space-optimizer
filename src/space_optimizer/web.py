@@ -227,7 +227,7 @@ def serve(
     one_filesystem: Annotated[bool, typer.Option("--one-filesystem", "-x", help="Don't descend into other mounted volumes.")] = False,
     allow_root: Annotated[bool, typer.Option("--allow-root", help="Allow running as root (not recommended).")] = False,
 ) -> None:
-    """Start the Space Optimizer web UI on http://127.0.0.1:PORT. Nothing is scanned until you press Scan."""
+    """Start the Local Disk Space Optimizer web UI on http://127.0.0.1:PORT. Nothing is scanned until you press Scan."""
     if running_as_root() and not allow_root:
         typer.echo(
             "Refusing to run as root: the UI can move files to the Trash, and as root it could touch "
@@ -241,7 +241,7 @@ def serve(
     job = ScanJob(store)
     server = ThreadingHTTPServer(("127.0.0.1", port), make_handler(store, job, default_path, one_filesystem))
     url = f"http://127.0.0.1:{port}/"
-    typer.echo(f"Space Optimizer running at {url}  (results saved in {store.path}; Ctrl+C to stop)")
+    typer.echo(f"Local Disk Space Optimizer running at {url}  (results saved in {store.path}; Ctrl+C to stop)")
     if not no_browser:
         threading.Timer(0.5, webbrowser.open, args=(url,)).start()
     try:
