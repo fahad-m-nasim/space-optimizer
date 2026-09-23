@@ -200,7 +200,7 @@ def scan(
         f"scanned in {elapsed:.1f}s"
     )
     if hidden:
-        summary += f" · {hidden} more rows hidden (use --top 0 to show all)"
+        summary += f"; {hidden} more rows hidden (use --top 0 to show all)"
     console.print(summary)
     if root.errors:
         console.print(
