@@ -560,7 +560,7 @@ function render() {
   $("upBtn").disabled = !f.rel;
 
   $("tSize").textContent = fmtSize(f.size);
-  $("tSizeSub").textContent = f.rel ? `${(f.size / d.root_size * 100).toFixed(1)}% of ${d.root.split("/").pop() || "/"}` : "total scanned";
+  $("tSizeSub").textContent = f.rel ? `${(f.size / d.root_size * 100).toFixed(1)}% of ${d.root.split(/[\\/]/).filter(Boolean).pop() || d.root}` : "total scanned";
   $("tFiles").textContent = fmtInt(f.files);
   $("tFilesSub").textContent = `${fmtInt(f.subfolders)} subfolders`;
   $("tMod").textContent = ago(f.modified);

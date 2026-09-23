@@ -1,0 +1,25 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    name: ${{ matrix.os }} / Python ${{ matrix.python }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python: ["3.10", "3.14"]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10
+      - name: Run tests
+        run: uv run --python ${{ matrix.python }} pytest -v
+      - name: Smoke-test the installed commands
+        run: |
+          uv run --python ${{ matrix.python }} space-optimizer . --top 3
+          uv run --python ${{ matrix.python }} space-optimizer-web --help

@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import os
 import re
 import shutil
 import threading
@@ -19,6 +18,7 @@ from rich.progress_bar import ProgressBar
 from rich.table import Table
 
 from space_optimizer.scanner import Scanner
+from space_optimizer.system import running_elevated
 
 console = Console()
 app = typer.Typer(add_completion=False, help=__doc__)
@@ -114,9 +114,9 @@ def scan(
 ) -> None:
     """Show disk usage and which folders under PATH take the most space, with last access/modify times."""
     path = path.expanduser().resolve()
-    if hasattr(os, "geteuid") and os.geteuid() == 0:
-        console.print("[yellow]Running as root: this will read folders your normal user can't. "
-                      "Run without sudo to scan only what you have access to.[/yellow]")
+    if running_elevated():
+        console.print("[yellow]Running as root / administrator: this will read folders your normal user can't. "
+                      "Run it as your normal user to scan only what you have access to.[/yellow]")
     if not path.is_dir():
         console.print(f"[red]Not a directory:[/red] {path}")
         raise typer.Exit(1)

@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import json
-import os
 import shutil
 import sqlite3
 import subprocess
@@ -23,6 +22,7 @@ from send2trash import send2trash
 
 from space_optimizer.scanner import ScanCancelled, Scanner
 from space_optimizer.store import DEFAULT_DB, Store
+from space_optimizer.system import running_elevated
 
 ALLOWED_HOSTS = {"127.0.0.1", "localhost"}
 
@@ -82,10 +82,6 @@ class ScanJob:
             }
 
 
-def running_as_root() -> bool:
-    return hasattr(os, "geteuid") and os.geteuid() == 0
-
-
 class BadRequest(Exception):
     pass
 
@@ -100,7 +96,8 @@ def make_handler(store: Store, job: ScanJob, default_path: Path, one_filesystem:
             raise BadRequest("unknown scan")
         root = Path(scan["root"])
         rel_path = Path(rel)
-        if rel_path.is_absolute() or ".." in rel_path.parts or (not rel and not allow_root):
+        # `anchor` catches absolute paths and Windows drive/root forms like "C:x" or "\\x".
+        if rel_path.anchor or ".." in rel_path.parts or (not rel and not allow_root):
             raise BadRequest("invalid path")
         target = root / rel if rel else root
         # Resolve the parent only, so a symlink as the final component is handled as the link itself.
@@ -225,14 +222,14 @@ def serve(
     db: Annotated[Path, typer.Option("--db", help="SQLite file where scan results are saved.")] = DEFAULT_DB,
     no_browser: Annotated[bool, typer.Option("--no-browser", help="Don't open the browser automatically.")] = False,
     one_filesystem: Annotated[bool, typer.Option("--one-filesystem", "-x", help="Don't descend into other mounted volumes.")] = False,
-    allow_root: Annotated[bool, typer.Option("--allow-root", help="Allow running as root (not recommended).")] = False,
+    allow_root: Annotated[bool, typer.Option("--allow-root", help="Allow running as root / administrator (not recommended).")] = False,
 ) -> None:
     """Start the Local Disk Space Optimizer web UI on http://127.0.0.1:PORT. Nothing is scanned until you press Scan."""
-    if running_as_root() and not allow_root:
+    if running_elevated() and not allow_root:
         typer.echo(
-            "Refusing to run as root: the UI can move files to the Trash, and as root it could touch "
-            "system files. Run it as your normal user (it only sees what you can access), "
-            "or pass --allow-root if you really mean it.",
+            "Refusing to run as root / administrator: the UI can move files to the Trash, and with "
+            "elevated rights it could touch system files. Run it as your normal user (it only sees "
+            "what you can access), or pass --allow-root if you really mean it.",
             err=True,
         )
         raise typer.Exit(1)
