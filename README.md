@@ -39,6 +39,31 @@ cd space-optimizer
 uv run space-optimizer-web
 ```
 
+### Locked-down / corporate machines
+
+Some managed laptops (especially Windows with AppLocker or similar policies) block `uv`,
+`git`, or programs installed in your user folder. The route below needs only an approved
+Python 3.10+ and access to PyPI.
+
+```powershell
+# 1. Create a virtual environment with your approved Python
+python -m venv .venv
+
+# 2. Install straight from GitHub as a ZIP (no git needed)
+.venv\Scripts\python -m pip install https://github.com/fahad-m-nasim/space-optimizer/archive/refs/heads/main.zip
+
+# 3. Start the web UI
+.venv\Scripts\space-optimizer-web.exe --no-browser
+```
+
+Then open <http://127.0.0.1:8765> in your browser yourself.
+
+- **If `.exe` launchers are blocked too,** start it through Python instead:
+  `.venv\Scripts\python -m space_optimizer.web --no-browser`. For the terminal report, use `python -m space_optimizer`.
+- **In VS Code,** select the `.venv` interpreter and run the same command in the integrated terminal.
+- **If your home folder is restricted,** use `--db` to keep saved scans somewhere you can write, e.g. `--db .\scans.db`.
+- **On macOS/Linux** the same steps work with `.venv/bin/python` and `.venv/bin/space-optimizer-web`.
+
 ## Web UI
 
 ```bash
@@ -122,6 +147,8 @@ uv sync
 uv run space-optimizer-web --no-browser --db ./dev.db
 uv run pytest                       # run the tests
 ```
+
+Without uv: `python -m venv .venv`, then `.venv/bin/python -m pip install -e . pytest` and `.venv/bin/python -m pytest`.
 
 ```
 src/space_optimizer/

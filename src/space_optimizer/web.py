@@ -251,3 +251,7 @@ def serve(
 
 def main() -> None:
     typer.run(serve)
+
+
+if __name__ == "__main__":  # python -m space_optimizer.web
+    main()

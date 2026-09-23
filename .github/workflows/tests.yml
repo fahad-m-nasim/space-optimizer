@@ -23,3 +23,11 @@ jobs:
         run: |
           uv run --python ${{ matrix.python }} space-optimizer . --top 3
           uv run --python ${{ matrix.python }} space-optimizer-web --help
+      - name: Install with plain pip and run via python -m (locked-down machine route)
+        shell: bash
+        run: |
+          uv venv --seed --python ${{ matrix.python }} pipvenv
+          if [ -d pipvenv/Scripts ]; then PY=pipvenv/Scripts/python; else PY=pipvenv/bin/python; fi
+          $PY -m pip install .
+          $PY -m space_optimizer . --top 3
+          $PY -m space_optimizer.web --help

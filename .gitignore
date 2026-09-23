@@ -18,3 +18,4 @@ wheels/
 *.db
 *.db-wal
 *.db-shm
+pipvenv/
